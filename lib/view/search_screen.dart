@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:movie_app_project/api/google/location/location_service.dart';
 
@@ -15,14 +16,18 @@ class MapSampleState extends State<SearchScreen> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
-  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _originController = TextEditingController();
+  final TextEditingController _destinationController = TextEditingController();
 
   Set<Marker> _markers = Set<Marker>();
   Set<Polygon> _polygons = Set<Polygon>();
+  Set<Polyline> _polylines = Set<Polyline>();
+
 
   List<LatLng> polygonLatLngs = <LatLng>[];
 
   int _polygonIdCounter = 1;
+  int _polylineIdCounter = 1;
 
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
@@ -61,29 +66,72 @@ class MapSampleState extends State<SearchScreen> {
     );
   }
 
+  void _setPolyline(List<PointLatLng> points) {
+    final String polylineIdVal = 'polygon_$_polylineIdCounter';
+    _polylineIdCounter++;
+
+    _polylines.add (
+      Polyline (
+        polylineId: PolylineId(polylineIdVal),
+        width: 2,
+        color: Colors.blue,
+        points: points.map(
+                (point) => LatLng(point.latitude, point.longitude),
+        ).toList(),
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          Row(
+          Row (
             children: [
-              Expanded(
-                  child: TextFormField(
-                controller: _searchController,
-                textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(
-                  hintText: '도시를 입력해주세요.',
-                ),
-                onChanged: (value) {},
-              )),
-              IconButton(
-                  onPressed: () async {
-                    var place = await LocationService().getPlace(_searchController.text);
+              Expanded (
+                child: Column (
+                  children: [
+                    TextFormField(
+                      controller: _originController,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: const InputDecoration(
+                        hintText: '도시를 입력해주세요.',
+                      ),
+                      onChanged: (value) {},
+                    ),
 
-                    _goToPlace(place);
-                  },
-                  icon: const Icon(Icons.search)),
+                    TextFormField(
+                      controller: _destinationController,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: const InputDecoration(
+                        hintText: '도시를 입력해주세요.',
+                      ),
+                      onChanged: (value) {},
+                    ),
+                  ],
+                ),
+              ),
+
+              IconButton(
+                onPressed: () async {
+                  var directions = await LocationService().getDirections (
+                      _originController.text, _destinationController.text,
+                  );
+
+                  _goToPlace (
+                    directions['start_location']['lat'],
+                    directions['start_location']['lng'],
+                    directions['bounds_ne'],
+                    directions['bounds_sw'],
+                  );
+
+                  _setPolyline (
+                    directions['polyline_decoded']
+                  );
+                },
+                icon: const Icon(Icons.search)
+              ),
             ],
           ),
           Expanded(
@@ -91,7 +139,7 @@ class MapSampleState extends State<SearchScreen> {
               mapType: MapType.normal,
               markers: _markers,
               polygons: _polygons,
-
+              polylines: _polylines,
               initialCameraPosition: _kGooglePlex,
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
@@ -109,15 +157,25 @@ class MapSampleState extends State<SearchScreen> {
     );
   }
 
-  Future<void> _goToPlace(Map<String, dynamic> place) async {
-    final double lat = place['geometry']['location']['lat'];
-    final double lng = place['geometry']['location']['lng'];
+  Future<void> _goToPlace(Map<String, dynamic> boundsNe, Map<String, dynamic> boundsSw, double lat, double lng) async {
+    // final double lat = place['geometry']['location']['lat'];
+    // final double lng = place['geometry']['location']['lng'];
 
     final GoogleMapController controller = await _controller.future;
     await controller.animateCamera (
         CameraUpdate.newCameraPosition (
           CameraPosition(target: LatLng(lat, lng), zoom: 12),
         )
+    );
+
+    controller.animateCamera (
+      CameraUpdate.newLatLngBounds (
+        LatLngBounds (
+            southwest: LatLng(boundsSw['lat'], boundsSw['lng']),
+            northeast: LatLng(boundsNe['lat'], boundsNe['lng']),
+        ),
+        25
+      ),
     );
 
     _setMarker (

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app_project/view/actor_movie.dart';
-import 'package:movie_app_project/view/profile_screen.dart';
-import 'package:movie_app_project/view/search_screen.dart';
 import 'package:movie_app_project/widgets/top_rated.dart';
 import 'package:movie_app_project/widgets/trending.dart';
 import 'package:movie_app_project/widgets/tv.dart';
@@ -81,6 +79,9 @@ class _MovieScreenState extends State<MovieScreen> with SingleTickerProviderStat
                         key: _actorKey,
                         textAlign: TextAlign.center,
                         cursorColor: Colors.black,
+                        style: const TextStyle (
+                          color: Colors.black
+                        ),
                         textAlignVertical: TextAlignVertical.center,
                         decoration: const InputDecoration (
                           hintText: '원하는 배우 이름 입력',
@@ -88,7 +89,7 @@ class _MovieScreenState extends State<MovieScreen> with SingleTickerProviderStat
                           hintStyle: TextStyle (
                             color: Colors.grey,
                             decorationColor: Colors.black,
-                            fontSize: 18.0
+                            fontSize: 18.0,
                           ),
                           prefixIcon: Icon(Icons.account_circle),
                           fillColor: Colors.black,
@@ -117,8 +118,6 @@ class _MovieScreenState extends State<MovieScreen> with SingleTickerProviderStat
                 )
               ],
             ),
-
-
 
             Expanded (
               child: ListView (

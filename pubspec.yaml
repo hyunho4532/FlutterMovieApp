@@ -48,6 +48,8 @@ dependencies:
   firebase_core: ^2.15.0
   google_maps_flutter: ^2.3.1
   flutter_polyline_points: ^1.0.0
+  location: ^5.0.0
+
 
 dev_dependencies:
   flutter_test:

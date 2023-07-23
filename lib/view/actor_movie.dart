@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app_project/utils/dialog/movie_dialog.dart';
 
 class ActorMovies extends StatelessWidget {
 
@@ -23,7 +24,10 @@ class ActorMovies extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return InkWell (
                       onTap: () {
-
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => movieDialog(actor, index),
+                        );
                       },
                       child: SizedBox (
                         width: 140,
@@ -36,10 +40,17 @@ class ActorMovies extends StatelessWidget {
                                 image: DecorationImage (
                                   image: NetworkImage (
                                       'https://image.tmdb.org/t/p/w500' + actor[index]['profile_path']
-                                  )
+                                  ),
                                 ),
                               ),
                             ),
+
+                            Text (
+                              actor[index]['name'],
+                              style: const TextStyle (
+                                color: Colors.black
+                              ),
+                            )
                           ],
                         ),
                       ),

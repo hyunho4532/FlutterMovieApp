@@ -29,19 +29,9 @@ class MapSampleState extends State<SearchScreen> {
   int _polygonIdCounter = 1;
   int _polylineIdCounter = 1;
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
-
   @override
   void initState() {
     super.initState();
-    
-    _setMarker (
-      LatLng(37.42796133580664, -122.085749655962),
-    );
   }
 
   void _setMarker (LatLng point) {
@@ -92,7 +82,7 @@ class MapSampleState extends State<SearchScreen> {
               Expanded (
                 child: Column (
                   children: [
-                    TextFormField(
+                    TextFormField (
                       controller: _originController,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
@@ -116,7 +106,8 @@ class MapSampleState extends State<SearchScreen> {
               IconButton(
                 onPressed: () async {
                   var directions = await LocationService().getDirections (
-                      _originController.text, _destinationController.text,
+                      _originController.text,
+                    _destinationController.text,
                   );
 
                   _goToPlace (
@@ -141,6 +132,8 @@ class MapSampleState extends State<SearchScreen> {
               polygons: _polygons,
               polylines: _polylines,
               initialCameraPosition: _kGooglePlex,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
               },
@@ -157,11 +150,12 @@ class MapSampleState extends State<SearchScreen> {
     );
   }
 
-  Future<void> _goToPlace(Map<String, dynamic> boundsNe, Map<String, dynamic> boundsSw, double lat, double lng) async {
+  Future<void> _goToPlace(double lat, double lng, Map<String, dynamic> boundsNe, Map<String, dynamic> boundsSw) async {
     // final double lat = place['geometry']['location']['lat'];
     // final double lng = place['geometry']['location']['lng'];
 
     final GoogleMapController controller = await _controller.future;
+
     await controller.animateCamera (
         CameraUpdate.newCameraPosition (
           CameraPosition(target: LatLng(lat, lng), zoom: 12),
@@ -182,4 +176,9 @@ class MapSampleState extends State<SearchScreen> {
       LatLng(lat, lng)
     );
   }
+
+  final CameraPosition _kGooglePlex = const CameraPosition (
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
 }

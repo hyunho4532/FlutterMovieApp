@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 Widget movieDialog(List<dynamic> actor, int index) {
@@ -42,8 +43,13 @@ Widget movieDialog(List<dynamic> actor, int index) {
           padding: const EdgeInsets.only(top: 40.0),
           child: Center (
             child: ElevatedButton (
-              onPressed: () {
+              onPressed: () async {
+                DatabaseReference ref = FirebaseDatabase.instance.ref("favorite/actors");
 
+                await ref.set ({
+                  "name": actor[index]['name'].toString(),
+                  "path": actor[index]['profile_path'].toString(),
+                });
               },
 
               child: const Text('등록하기'),

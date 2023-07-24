@@ -20,3 +20,9 @@
   - [X] 사용자가 원하는 배우 이름 입력할 때마다 입력한 텍스트들이 안보이는 현상 수정
 
 <img src="https://github.com/hyunho4532/flutter-MVT-Project/assets/118269278/41c5843f-72f4-4ea0-bd03-9a272540024c" width=350 height=700>
+
+<hr>
+
+### API 관련 안내
+<a href="https://www.themoviedb.org/">TMDB</a><br>
+<a href="https://developers.google.com/maps">google map</a>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app_project/view/favorite_screen.dart';
 import 'package:movie_app_project/view/movie_screen.dart';
 import 'package:movie_app_project/view/profile_screen.dart';
 import 'package:movie_app_project/view/search_screen.dart';
@@ -17,6 +18,7 @@ class _BottomNaviBarState extends State<BottomNaviBar> with SingleTickerProvider
   final List _screens = [
     const MovieScreen(),
     const SearchScreen(),
+    const FavoriteScreen(),
     const ProfileScreen(),
   ];
 
@@ -46,6 +48,13 @@ class _BottomNaviBarState extends State<BottomNaviBar> with SingleTickerProvider
                 Icons.search,
               ),
               label: '검색'
+          ),
+
+          BottomNavigationBarItem (
+            icon: Icon (
+              Icons.favorite
+            ),
+            label: '좋아요'
           ),
 
           BottomNavigationBarItem (

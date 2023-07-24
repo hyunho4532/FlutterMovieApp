@@ -44,7 +44,7 @@ Widget movieDialog(List<dynamic> actor, int index) {
           child: Center (
             child: ElevatedButton (
               onPressed: () async {
-                DatabaseReference ref = FirebaseDatabase.instance.ref("favorite/actors");
+                DatabaseReference ref = FirebaseDatabase.instance.ref("favorite/actors").push();
 
                 await ref.set ({
                   "name": actor[index]['name'].toString(),
@@ -55,6 +55,7 @@ Widget movieDialog(List<dynamic> actor, int index) {
               child: const Text('등록하기'),
             ),
           ),
+
         )
       ],
     ),

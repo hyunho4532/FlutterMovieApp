@@ -17,8 +17,9 @@ Widget movieDialog(List<dynamic> actor, int index) {
         ),
 
         Icon (
-          Icons.abc,
-          color: Colors.black,
+          Icons.favorite,
+          color: Colors.red,
+          size: 40,
         ),
       ],
     ),

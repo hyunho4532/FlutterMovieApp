@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "897236687666",
+    "firebase_url": "https://flutter-mvt-proejct-default-rtdb.firebaseio.com",
+    "project_id": "flutter-mvt-proejct",
+    "storage_bucket": "flutter-mvt-proejct.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:897236687666:android:f3295769ae686422e5952b",
+        "android_client_info": {
+          "package_name": "com.hyun.movie.movie_app_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "897236687666-bk50r3g75ufnhe0bjf9tahsl3s8o172j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNmPbIOuyiXQJECrqPbZnK4rMZyyGTwNs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "897236687666-bk50r3g75ufnhe0bjf9tahsl3s8o172j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

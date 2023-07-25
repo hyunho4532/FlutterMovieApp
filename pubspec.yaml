@@ -50,6 +50,7 @@ dependencies:
   flutter_polyline_points: ^1.0.0
   location: ^5.0.0
   firebase_database: ^10.2.4
+  fluttertoast: ^8.2.2
 
 dev_dependencies:
   flutter_test:
@@ -76,7 +77,6 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - asset/profile.png
-    - asset/universe.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

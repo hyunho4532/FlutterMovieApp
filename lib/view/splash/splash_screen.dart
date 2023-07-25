@@ -1,19 +1,30 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_app_project/const/widget/bottom_navi_bar.dart';
 import 'package:movie_app_project/firebase_options.dart';
 import 'package:movie_app_project/view/register/register_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp (
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const SplashScreen());
 }
 
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +36,7 @@ class SplashScreen extends StatelessWidget {
       ),
       home: AnimatedSplashScreen (
         splash: Image.asset('asset/profile.png', width: 300, height: 300,),
-        nextScreen: const RegisterScreen(),
+        nextScreen: auth.currentUser!.uid.isEmpty ? const RegisterScreen() : const BottomNaviBar(),
         splashTransition: SplashTransition.sizeTransition,
         pageTransitionType: PageTransitionType.bottomToTop,
       ),

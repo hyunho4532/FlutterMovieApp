@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
@@ -14,6 +15,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Query dbRef = FirebaseDatabase.instance.ref().child('favorite/actors');
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold (
@@ -24,11 +27,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         children: [
 
-          const Padding (
-            padding: EdgeInsets.only(left: 12.0, top: 24.0),
+          Padding (
+            padding: const EdgeInsets.only(left: 12.0, top: 24.0),
             child: Text (
-              '안녕하세요, User 님',
-              style: TextStyle (
+              '안녕하세요, ${_auth.currentUser!.email.toString()} 님',
+              style: const TextStyle (
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,

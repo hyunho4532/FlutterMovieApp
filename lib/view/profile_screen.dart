@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -13,12 +11,37 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
 
-  Query dbRef = FirebaseDatabase.instance.ref().child('favorite/actors');
+  String data = '';
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  final TextEditingController profileNicknameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    getDataFromFirebase();
+  }
+
+  void getDataFromFirebase() {
+    DatabaseReference starCountRef = FirebaseDatabase.instance
+        .reference()
+        .child(_auth.currentUser!.uid.toString())
+        .child('nickname');
+
+    starCountRef.onValue.listen((event) {
+      setState(() {
+        data = event.snapshot.value.toString();
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    DatabaseReference ref = FirebaseDatabase.instance.ref(_auth.currentUser!.uid.toString());
+
     return Scaffold (
       backgroundColor: Colors.white,
       body: Column (
@@ -27,10 +50,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         children: [
 
+          Row (
+            children: [
+              Expanded (
+                child: Padding (
+                  padding: const EdgeInsets.only(top: 40.0, left: 16.0, right: 16.0),
+                  child: TextFormField (
+                    controller: profileNicknameController,
+                    style: const TextStyle (
+                      color: Colors.black,
+                      fontSize: 16.0,
+                    ),
+                    decoration: const InputDecoration (
+                      hintText: '원하는 닉네임을 입력해주세요.',
+                      hintStyle: TextStyle (
+                        color: Colors.grey,
+                      )
+                    ),
+                  ),
+                ),
+              ),
+
+              Padding (
+                padding: const EdgeInsets.only(top: 40.0, right: 8.0),
+                child: ElevatedButton (
+                  onPressed: () {
+                    ref.set ({
+                      "nickname": profileNicknameController.text
+                    });
+                  },
+                  child: const Text('입력 완료'),
+                ),
+              ),
+            ],
+          ),
+
+
           Padding (
-            padding: const EdgeInsets.only(left: 12.0, top: 24.0),
+            padding: const EdgeInsets.only(left: 12.0, top: 36.0),
             child: Text (
-              '안녕하세요, ${_auth.currentUser!.email.toString()} 님',
+              '안녕하세요, $data 님',
               style: const TextStyle (
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
@@ -39,8 +98,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
 
+
           const Padding (
-            padding: EdgeInsets.only(left: 12.0, top: 12.0),
+            padding: EdgeInsets.only(left: 12.0, top: 36.0),
             child: Text (
               '프로필을 조회해드립니다~!',
               style: TextStyle (
@@ -51,40 +111,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
 
-          const Center (
-            child: CircleAvatar (
-              radius: 60,
-              backgroundImage: AssetImage (
-                  'asset/profile.png'
+          const Padding (
+            padding: EdgeInsets.only(top: 32.0),
+            child: Center (
+              child: CircleAvatar (
+                radius: 60,
+                backgroundImage: AssetImage (
+                    'asset/profile.png'
+                ),
               ),
-            ),
-          ),
-
-          Expanded (
-            child: SizedBox (
-              height: double.infinity,
-              child: FirebaseAnimatedList (
-                query: dbRef,
-                itemBuilder: (BuildContext context, DataSnapshot snapshot, Animation<double> animation, int index) {
-                  String actors = snapshot.value.toString();
-
-                  return Column (
-                    children: [
-                      Container (
-                        width: 200,
-                        height: 200,
-                        decoration: BoxDecoration (
-                          image: DecorationImage (
-                            image: NetworkImage (
-                                'https://image.tmdb.org/t/p/w500$actors'
-                            ),
-                          )
-                        ),
-                      )
-                    ],
-                  );
-                },
-              )
             ),
           ),
         ],

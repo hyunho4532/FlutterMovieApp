@@ -27,6 +27,12 @@ class _SplashScreenState extends State<SplashScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp (
       debugShowCheckedModeBanner: false,
@@ -36,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       home: AnimatedSplashScreen (
         splash: Image.asset('asset/profile.png', width: 300, height: 300,),
-        nextScreen: auth.currentUser!.uid.isEmpty ? const RegisterScreen() : const BottomNaviBar(),
+        nextScreen: auth.currentUser!.email!.isEmpty ? const BottomNaviBar() : const BottomNaviBar(),
         splashTransition: SplashTransition.sizeTransition,
         pageTransitionType: PageTransitionType.bottomToTop,
       ),

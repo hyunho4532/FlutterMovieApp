@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +13,23 @@ class FavoriteScreen extends StatefulWidget {
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
 
-  Query dbRef = FirebaseDatabase.instance.ref().child('favorite/actors');
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
+    Query dbRef = FirebaseDatabase.instance.ref("favorite/actors").child(_auth.currentUser!.uid.toString());
+
+    DatabaseReference starCountRef = FirebaseDatabase.instance.ref('${_auth.currentUser!.uid.toString()}/nickname');
+
+    print(_auth.currentUser!.uid.toString());
+
+    starCountRef.onValue.listen((event) {
+      final data = event.snapshot.value;
+
+      print(data);
+    });
+
+
     return Scaffold (
       backgroundColor: Colors.white,
       body: Column (
@@ -27,7 +41,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           const Padding (
             padding: EdgeInsets.only(left: 12.0, top: 24.0),
             child: Text (
-              '안녕하세요, User 님',
+              '안녕하세요, 님',
               style: TextStyle (
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
@@ -36,10 +50,11 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             ),
           ),
 
+
           const Padding (
             padding: EdgeInsets.only(left: 12.0, top: 180.0),
             child: Text (
-              'User 님의 좋아하는 배우',
+              'User 님의 가장 좋아하는 배우',
               style: TextStyle (
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
@@ -58,9 +73,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     String actors = snapshot.value.toString();
 
                     return Column (
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-
                       children: [
                         Container (
                           width: 100,

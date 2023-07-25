@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:movie_app_project/const/widget/bottom_navi_bar.dart';
@@ -14,8 +15,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nicknameController = TextEditingController();
 
   bool _isObSecureText = false;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +74,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               Padding (
                 padding: const EdgeInsets.only(left: 12.0, top: 80.0),
+                child: Form (
+                  child: TextFormField (
+                    controller: _nicknameController,
+                    cursorRadius: const Radius.circular(40),
+                    style: const TextStyle (
+                      color: Colors.black,
+                    ),
+                    decoration: const InputDecoration (
+                      enabledBorder: UnderlineInputBorder (
+                        borderSide: BorderSide (color: Colors.black),
+                      ),
+                      hintText: '닉네임을 입력해주세요.',
+                      hintStyle: TextStyle (
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              Padding (
+                padding: const EdgeInsets.only(left: 12.0, top: 40.0),
                 child: Form (
                   child: TextFormField (
                     controller: _emailController,
@@ -131,7 +157,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   child: ElevatedButton (
                       onPressed: () {
-
                         firebaseRegister();
                       },
                       child: const Text (
@@ -162,6 +187,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return value;
     });
 
-    FirebaseAuth.instance.currentUser?.sendEmailVerification();
+    _auth.currentUser?.sendEmailVerification();
   }
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -44,7 +45,10 @@ Widget movieDialog(List<dynamic> actor, int index) {
           child: Center (
             child: ElevatedButton (
               onPressed: () async {
-                DatabaseReference ref = FirebaseDatabase.instance.ref("favorite/actors").push();
+
+                FirebaseAuth _auth = FirebaseAuth.instance;
+
+                DatabaseReference ref = FirebaseDatabase.instance.ref("favorite/actors").child(_auth.currentUser!.uid.toString());
 
                 await ref.set ({
                   "name": actor[index]['name'].toString(),

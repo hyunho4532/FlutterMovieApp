@@ -12,7 +12,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
 
-  String data = '';
+  String? data = '';
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -104,25 +104,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
 
 
-          Padding (
-            padding: const EdgeInsets.only(left: 12.0, top: 36.0),
+          if(data == 'null')
+            const Padding (
+              padding: EdgeInsets.only(left: 12.0, top: 24.0),
+              child: Text (
+                '닉네임을 입력해주세요!!',
+                style: TextStyle (
+                  fontSize: 24.0,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+          ) else
+            Padding (
+              padding: const EdgeInsets.only(left: 12.0, top: 36.0),
+              child: Text (
+                '안녕하세요, $data 님',
+                style: const TextStyle (
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+          ),
+
+
+          if (data == 'null')
+            const Padding (
+            padding: EdgeInsets.only(left: 12.0, top: 36.0),
             child: Text (
-              '안녕하세요, $data 님',
-              style: const TextStyle (
-                fontSize: 24.0,
+              '프로필을 조회하기 전 간단한 닉네임 작성해주세요~!',
+              style: TextStyle (
+                fontSize: 16.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
             ),
-          ),
-
-
-          const Padding (
-            padding: EdgeInsets.only(left: 12.0, top: 36.0),
+          ) else
+            Padding (
+            padding: const EdgeInsets.only(left: 12.0, top: 36.0),
             child: Text (
-              '프로필을 조회해드립니다~!',
-              style: TextStyle (
-                fontSize: 24.0,
+              '$data 님을 위한 프로필 사진을 만들어봤어요!',
+              style: const TextStyle (
+                fontSize: 16.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),

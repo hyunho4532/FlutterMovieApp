@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app_project/const/widget/bottom_navi_bar.dart';
 import 'package:movie_app_project/firebase_options.dart';
+import 'package:movie_app_project/view/register/register_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
 void main() async {
@@ -41,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       home: AnimatedSplashScreen (
         splash: Image.asset('asset/profile.png', width: 300, height: 300,),
-        nextScreen: auth.currentUser!.email!.isEmpty ? const BottomNaviBar() : const BottomNaviBar(),
+        nextScreen: auth.currentUser!.email!.isEmpty ? const RegisterScreen() : const RegisterScreen(),
         splashTransition: SplashTransition.sizeTransition,
         pageTransitionType: PageTransitionType.bottomToTop,
       ),

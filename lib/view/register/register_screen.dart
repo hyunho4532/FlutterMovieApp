@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:movie_app_project/const/widget/bottom_navi_bar.dart';
+import 'package:movie_app_project/view/login/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -161,6 +162,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },
                       child: const Text (
                         '회원가입 완료'
+                      )
+                  ),
+                ),
+              ),
+
+              Padding (
+                padding: const EdgeInsets.only(left: 12.0, top: 40.0),
+                child: SizedBox (
+                  height: 40,
+                  width: MediaQuery.of(context).size.width,
+
+                  child: ElevatedButton (
+                      onPressed: () {
+                        Navigator.of(context).push (
+                          MaterialPageRoute(builder: (_) => const LoginScreen()),
+                        );
+                      },
+                      child: const Text (
+                          '이미 회원가입을 하셨을까요?'
                       )
                   ),
                 ),

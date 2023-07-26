@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -21,7 +22,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
 
+    loadDataFromSharedPreferences();
+
     getDataFromFirebase();
+  }
+
+  void loadDataFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      data = prefs.getString('data') ?? '';
+    });
   }
 
   void getDataFromFirebase() {
@@ -31,10 +42,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .child('nickname');
 
     starCountRef.onValue.listen((event) {
+      String newData = event.snapshot.value.toString() ?? '';
       setState(() {
-        data = event.snapshot.value.toString();
+        data = newData;
+        saveDataToSharedPreferences(newData);
       });
     });
+  }
+
+  void saveDataToSharedPreferences(String newData) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('data', newData);
   }
 
   @override

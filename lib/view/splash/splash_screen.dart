@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:movie_app_project/const/widget/bottom_navi_bar.dart';
 import 'package:movie_app_project/firebase_options.dart';
 import 'package:movie_app_project/view/login/login_screen.dart';
 import 'package:movie_app_project/view/register/register_screen.dart';
@@ -48,10 +50,15 @@ class _SplashScreenState extends State<SplashScreen> {
       ],
 
       home: AnimatedSplashScreen (
-        splash: Image.asset('asset/profile.png', width: 300, height: 300,),
-        nextScreen: auth.currentUser!.email!.isEmpty ? const RegisterScreen() : const RegisterScreen(),
+        splash: Lottie.asset('asset/lottie/splash.json'),
+        splashIconSize: 300,
+        nextScreen: auth.currentUser!.email!.isEmpty ? const RegisterScreen() : const BottomNaviBar(),
         splashTransition: SplashTransition.sizeTransition,
         pageTransitionType: PageTransitionType.bottomToTop,
+        duration: 5,
+        animationDuration: const Duration (
+          seconds: 1
+        ),
       ),
     );
   }

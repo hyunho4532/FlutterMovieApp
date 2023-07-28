@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -18,6 +21,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   final TextEditingController profileNicknameController = TextEditingController();
 
+  XFile? _image; // 이미지를 담을 변수 선언
+
+  final ImagePicker picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +32,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     loadDataFromSharedPreferences();
 
     getDataFromFirebase();
+  }
+
+  Future getImage(ImageSource imageSource) async {
+    final XFile? pickedFile = await picker.pickImage(source: imageSource);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = XFile(pickedFile.path);
+      });
+    }
   }
 
   void loadDataFromSharedPreferences() async {
@@ -72,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Expanded (
                 child: Padding (
-                  padding: const EdgeInsets.only(top: 40.0, left: 16.0, right: 16.0),
+                  padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
                   child: TextFormField (
                     controller: profileNicknameController,
                     style: const TextStyle (
@@ -90,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
 
               Padding (
-                padding: const EdgeInsets.only(top: 40.0, right: 8.0),
+                padding: const EdgeInsets.only(top: 16.0, right: 8.0),
                 child: ElevatedButton (
                   onPressed: () {
                     ref.set ({
@@ -144,7 +161,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Padding (
             padding: const EdgeInsets.only(left: 12.0, top: 36.0),
             child: Text (
-              '$data 님을 위한 프로필 사진을 만들어봤어요!',
+              '$data 님을 위한 프로필 사진을 만들어보세요~!',
               style: const TextStyle (
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
@@ -153,13 +170,67 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
 
-          const Padding (
-            padding: EdgeInsets.only(top: 32.0),
+          Padding (
+            padding: const EdgeInsets.only(top: 32.0),
             child: Center (
-              child: CircleAvatar (
-                radius: 60,
-                backgroundImage: AssetImage (
-                    'asset/profile.png'
+              child: GestureDetector (
+                child: Column (
+                  children: [
+
+                    _image != null
+                      ? Container (
+                      decoration: BoxDecoration (
+                        borderRadius: BorderRadius.circular(180),
+                      ),
+                      width: 120,
+                      height: 120,
+                      child: Image.file (
+                          File (
+                              _image!.path
+                          ),
+                          fit: BoxFit.cover,
+                      ),
+                    ) : Container (
+                      width: 120,
+                      height: 120,
+                      color: Colors.grey,
+                    ),
+
+                    Row (
+                      mainAxisAlignment: MainAxisAlignment.center,
+
+                      children: [
+                        Padding (
+                          padding: const EdgeInsets.only(right: 42.0, top: 8, bottom: 16),
+                          child: GestureDetector (
+                            onTap: () {
+                              getImage(ImageSource.camera);
+                            },
+                            child: const Icon (
+                              Icons.camera_alt,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+
+                        Padding (
+                          padding: const EdgeInsets.only(left: 42.0, top: 8, bottom: 16),
+                          child: GestureDetector (
+                            onTap: () {
+                              getImage(ImageSource.gallery);
+                            },
+
+                            child: const Icon (
+                              Icons.add_card_sharp,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
                 ),
               ),
             ),

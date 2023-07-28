@@ -87,14 +87,15 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                           height: 100,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(250),
-                            image: DecorationImage(
-                              image: NetworkImage(
+                            image: DecorationImage (
+
+                              image: NetworkImage (
                                 'https://image.tmdb.org/t/p/w500$actorUrl',
                               ),
                               fit: BoxFit.cover,
                             ),
                           ),
-                        )
+                        ),
                       ],
                     );
                   },

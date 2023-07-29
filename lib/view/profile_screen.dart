@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:movie_app_project/controller/image/image_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -14,16 +16,14 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
   String? data = '';
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  final TextEditingController profileNicknameController = TextEditingController();
+  final TextEditingController profileNicknameController =
+      TextEditingController();
 
-  XFile? _image; // 이미지를 담을 변수 선언
-
-  final ImagePicker picker = ImagePicker();
+  final ImageController controller = ImageController();
 
   @override
   void initState() {
@@ -32,16 +32,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     loadDataFromSharedPreferences();
 
     getDataFromFirebase();
-  }
-
-  Future getImage(ImageSource imageSource) async {
-    final XFile? pickedFile = await picker.pickImage(source: imageSource);
-
-    if (pickedFile != null) {
-      setState(() {
-        _image = XFile(pickedFile.path);
-      });
-    }
   }
 
   void loadDataFromSharedPreferences() async {
@@ -74,165 +64,112 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref(_auth.currentUser!.uid.toString());
 
-    DatabaseReference ref = FirebaseDatabase.instance.ref(_auth.currentUser!.uid.toString());
-
-    return Scaffold (
+    return Scaffold(
       backgroundColor: Colors.white,
-      body: Column (
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: [
-
-          Row (
+          Row(
             children: [
-              Expanded (
-                child: Padding (
-                  padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-                  child: TextFormField (
+              Expanded(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+                  child: TextFormField(
                     controller: profileNicknameController,
-                    style: const TextStyle (
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 16.0,
                     ),
-                    decoration: const InputDecoration (
-                      hintText: '원하는 닉네임을 입력해주세요.',
-                      hintStyle: TextStyle (
-                        color: Colors.grey,
-                      )
-                    ),
+                    decoration: const InputDecoration(
+                        hintText: '원하는 닉네임을 입력해주세요.',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                        )),
                   ),
                 ),
               ),
-
-              Padding (
+              Padding(
                 padding: const EdgeInsets.only(top: 16.0, right: 8.0),
-                child: ElevatedButton (
+                child: ElevatedButton(
                   onPressed: () {
-                    ref.set ({
-                      "nickname": profileNicknameController.text
-                    });
+                    ref.set({"nickname": profileNicknameController.text});
                   },
                   child: const Text('입력 완료'),
                 ),
               ),
             ],
           ),
-
-
-          if(data == 'null')
-            const Padding (
-              padding: EdgeInsets.only(left: 12.0, top: 24.0),
-              child: Text (
-                '닉네임을 입력해주세요!!',
-                style: TextStyle (
-                  fontSize: 24.0,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-          ) else
-            Padding (
-              padding: const EdgeInsets.only(left: 12.0, top: 36.0),
-              child: Text (
-                '안녕하세요, $data 님',
-                style: const TextStyle (
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-          ),
-
-
           if (data == 'null')
-            const Padding (
-            padding: EdgeInsets.only(left: 12.0, top: 36.0),
-            child: Text (
-              '프로필을 조회하기 전 간단한 닉네임 작성해주세요~!',
-              style: TextStyle (
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-          ) else
-            Padding (
-            padding: const EdgeInsets.only(left: 12.0, top: 36.0),
-            child: Text (
-              '$data 님을 위한 프로필 사진을 만들어보세요~!',
-              style: const TextStyle (
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-          ),
-
-          Padding (
-            padding: const EdgeInsets.only(top: 32.0),
-            child: Center (
-              child: GestureDetector (
-                child: Column (
-                  children: [
-
-                    _image != null
-                      ? Container (
-                      decoration: BoxDecoration (
-                        borderRadius: BorderRadius.circular(180),
-                      ),
-                      width: 120,
-                      height: 120,
-                      child: Image.file (
-                          File (
-                              _image!.path
-                          ),
-                          fit: BoxFit.cover,
-                      ),
-                    ) : Container (
-                      width: 120,
-                      height: 120,
-                      color: Colors.grey,
-                    ),
-
-                    Row (
-                      mainAxisAlignment: MainAxisAlignment.center,
-
-                      children: [
-                        Padding (
-                          padding: const EdgeInsets.only(right: 42.0, top: 8, bottom: 16),
-                          child: GestureDetector (
-                            onTap: () {
-                              getImage(ImageSource.camera);
-                            },
-                            child: const Icon (
-                              Icons.camera_alt,
-                              color: Colors.black,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-
-                        Padding (
-                          padding: const EdgeInsets.only(left: 42.0, top: 8, bottom: 16),
-                          child: GestureDetector (
-                            onTap: () {
-                              getImage(ImageSource.gallery);
-                            },
-
-                            child: const Icon (
-                              Icons.add_card_sharp,
-                              color: Colors.black,
-                              size: 20,
-                            ),
-                          ),
-                        )
-                      ],
-                    )
-                  ],
+            const Padding(
+              padding: EdgeInsets.only(left: 12.0, top: 24.0),
+              child: Text(
+                '닉네임을 입력해주세요!!',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0, top: 36.0),
+              child: Text(
+                '안녕하세요, $data 님',
+                style: const TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          if (data == 'null')
+            const Padding(
+              padding: EdgeInsets.only(left: 12.0, top: 36.0),
+              child: Text(
+                '프로필을 조회하기 전 간단한 닉네임 작성해주세요~!',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0, top: 36.0),
+              child: Text(
+                '$data 님을 위한 프로필 사진을 만들어보세요~!',
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.only(top: 32.0),
+            child: Center(
+              child: GestureDetector(
+                  onTap: () {
+                    controller.getImage(ImageSource.gallery);
+                  },
+                  child: Obx(
+                    () => SizedBox(
+                      width: 120,
+                      height: 120,
+                      child: controller.selectedImagePath.value != ''
+                          ? CircleAvatar(
+                              backgroundImage: FileImage(
+                                  File(controller.selectedImagePath.value)))
+                          : Image.asset('asset/profile.png'),
+                    ),
+                  )),
             ),
           ),
         ],

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie_app_project/controller/navigation/bottom_navigation_bar_controller.dart';
-import 'package:movie_app_project/view/movie_screen.dart';
 
 class MyBottomNavigationBar extends GetView<BottomNavigationBarController> {
   const MyBottomNavigationBar({ Key? key }) : super(key: key);

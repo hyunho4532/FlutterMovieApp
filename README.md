@@ -40,6 +40,10 @@
 - ## 2023-07-27
   - [X] 스플래시 디자인 애니메이션 사진 적용 (Lottie 사용)
 
+- ## 2023-07-29
+  - [X] 프로필 페이지 핸드폰 갤러리 구현
+  - [X] 갤러리에서 선택한 이미지를 가져오면 프로필 사진 등록
+
 <br><br><br>
 
 <img src="https://github.com/hyunho4532/flutter-MVT-Project/assets/118269278/41c5843f-72f4-4ea0-bd03-9a272540024c" width=350 height=700>

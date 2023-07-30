@@ -3,9 +3,12 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
+import 'package:movie_app_project/api/google/login/GoogleSignInApi.dart';
 import 'package:movie_app_project/const/widget/bottom_navi_bar.dart';
 import 'package:movie_app_project/view/login/login_screen.dart';
+import 'dart:convert';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -184,6 +187,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                       child: ElevatedButton (
                           onPressed: () {
+                            loginWithGoogle(context);
+                          },
+                          child: const Text (
+                              'Google 계정으로 간편 로그인',
+                          )
+                      ),
+                    ),
+                  ),
+
+                  Padding (
+                    padding: const EdgeInsets.only(left: 12.0, top: 40.0),
+                    child: SizedBox (
+                      height: 40,
+                      width: MediaQuery.of(context).size.width,
+
+                      child: ElevatedButton (
+                          onPressed: () {
                             Get.toNamed('/login');
                           },
                           child: const Text (
@@ -216,5 +236,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     _auth.currentUser?.sendEmailVerification();
+  }
+
+  Future<UserCredential> loginWithGoogle(BuildContext context) async {
+    GoogleSignInAccount? user = await GoogleSignInApi.login();
+
+    GoogleSignInAuthentication? googleAuth = await user!.authentication;
+
+    var credential = GoogleAuthProvider.credential (
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken
+    );
+
+    UserCredential? userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+    if (userCredential != null) {
+      Get.toNamed('/main');
+    }
+
+    return userCredential;
   }
 }

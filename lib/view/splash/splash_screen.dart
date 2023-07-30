@@ -7,6 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:movie_app_project/const/widget/bottom_navi_bar.dart';
 import 'package:movie_app_project/firebase_options.dart';
 import 'package:movie_app_project/view/login/login_screen.dart';
+import 'package:movie_app_project/view/movie_screen.dart';
 import 'package:movie_app_project/view/register/register_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -47,12 +48,13 @@ class _SplashScreenState extends State<SplashScreen> {
       getPages: [
         GetPage(name: '/register', page: () => const RegisterScreen()),
         GetPage(name: '/login', page: () => const LoginScreen()),
+        GetPage(name: '/main', page: () => const BottomNaviBar()),
       ],
 
       home: AnimatedSplashScreen (
         splash: Lottie.asset('asset/lottie/splash.json'),
         splashIconSize: 300,
-        nextScreen: auth.currentUser!.email!.isEmpty ? const RegisterScreen() : const BottomNaviBar(),
+        nextScreen: const RegisterScreen(),
         splashTransition: SplashTransition.sizeTransition,
         pageTransitionType: PageTransitionType.bottomToTop,
         duration: 5,

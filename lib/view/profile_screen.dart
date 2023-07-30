@@ -152,24 +152,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-          Padding(
+          Padding (
             padding: const EdgeInsets.only(top: 32.0),
-            child: Center(
-              child: GestureDetector(
-                  onTap: () {
-                    controller.getImage(ImageSource.gallery);
-                  },
-                  child: Obx(
-                    () => SizedBox(
-                      width: 120,
-                      height: 120,
-                      child: controller.selectedImagePath.value != ''
-                          ? CircleAvatar(
-                              backgroundImage: FileImage(
-                                  File(controller.selectedImagePath.value)))
-                          : Image.asset('asset/profile.png'),
-                    ),
-                  )),
+            child: Column (
+              children: [
+                Center(
+                  child: GestureDetector (
+                      onTap: () {
+                        controller.getImage(ImageSource.gallery);
+                      },
+                      child: Obx(
+                        () => SizedBox(
+                          width: 120,
+                          height: 120,
+                          child: controller.selectedImagePath.value != ''
+                              ? CircleAvatar(
+                                  backgroundImage: FileImage(
+                                      File(controller.selectedImagePath.value)))
+                              : Image.asset('asset/profile.png'),
+                        ),
+                      )
+                  ),
+                ),
+
+                Center (
+                  child: Row (
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+
+                    children: [
+                      SizedBox (
+                        width: MediaQuery.of(context).size.width / 3,
+
+                        child: ElevatedButton (
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black12,
+                          ),
+                          onPressed: () {
+                            _auth.signOut();
+
+                            Get.toNamed('/register');
+                          },
+
+                          child: const Text (
+                            '로그아웃',
+                            style: TextStyle (
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
         ],

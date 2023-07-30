@@ -1,5 +1,4 @@
-# flutter-MVT-Project
-플러터 토이 프로젝트 MVT (MovieTime) 입니다. 🔊🔊
+### 플러터 토이 프로젝트 MVT (MovieTime) 입니다. 🔊🔊
 
 - ## 2023-07-19
   - [x] 메인 페이지 및 TMDB  API 데이터 조회 완료
@@ -44,9 +43,22 @@
   - [X] 프로필 페이지 핸드폰 갤러리 구현
   - [X] 갤러리에서 선택한 이미지를 가져오면 프로필 사진 등록
 
-<br><br><br>
+- ## 2023-07-30
+  - [X] 로그아웃 기능 구현
+  - [X] 홈, 좋아요, 프로필 스크린 FutureBuilder 적용 (영화 불러올 때, 닉네임 조회할 때 사용) 
 
-<img src="https://github.com/hyunho4532/flutter-MVT-Project/assets/118269278/41c5843f-72f4-4ea0-bd03-9a272540024c" width=350 height=700>
+<br><br>
+
+## 회원가입 페이지
+<img src="https://github.com/hyunho4532/flutter-MVT-Project/assets/118269278/76add49e-f185-4b62-bad8-1e3ee8776eb6" width=350 height=700>
+
+
+<br><br>
+
+## 영화 메인 페이지
+<img src="https://github.com/hyunho4532/flutter-MVT-Project/assets/118269278/06ca2e3d-764c-4827-b525-baea8dbef542" width=350 height=700>
+
+<img src="https://github.com/hyunho4532/flutter-MVT-Project/assets/118269278/e4832037-36b8-4782-ac91-9727c8dd5c42" width=350 height=700>
 
 <hr>
 

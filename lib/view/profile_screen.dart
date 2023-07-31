@@ -62,9 +62,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     prefs.setString('data', newData);
   }
 
-  Future<String> getProfileNameData() async {
+  Future<String> getProfileNickNameData() async {
     await Future.delayed(const Duration(seconds: 1));
-    return 'Call Data';
+    return 'Call Profile NickName';
+  }
+
+  Future<String> getProfileImageData() async {
+    await Future.delayed(const Duration(seconds: 2));
+    return 'Call Profile Image';
   }
 
   @override
@@ -111,12 +116,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
 
           FutureBuilder (
-            future: getProfileNameData(),
+            future: getProfileNickNameData(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Padding (
                   padding: EdgeInsets.only(left: 12.0, top: 36.0),
-                  child: CircularProgressIndicator(),
+                  child: Row (
+                    children: [
+                      Text (
+                        '데이터를 로딩 중입니다.',
+                        style: TextStyle (
+                          color: Colors.black,
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      SizedBox (
+                        width: 16.0,
+                      ),
+
+                      CircularProgressIndicator(),
+                    ],
+                  ),
                 );
               } else if (snapshot.hasError) {
                 return Text ('Error ${snapshot.error}');
@@ -124,13 +146,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 if (data == 'null') {
                   return const Padding (
                     padding: EdgeInsets.only(left: 12.0, top: 36.0),
-                    child: Text (
-                      '닉네임을 입력해주세요!!',
-                      style: TextStyle (
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                    child: Column (
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+
+                      children: [
+                        Text (
+                          '닉네임을 입력해주세요!!',
+                          style: TextStyle (
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+
+                        SizedBox (
+                          height: 16.0,
+                        ),
+
+                        Text (
+                          '프로필을 조회하기 전 간단한 닉네임 작성해주세요~!',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 } else {
@@ -161,83 +203,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: Colors.black,
                           ),
                         ),
+
+                        Padding (
+                          padding: const EdgeInsets.only(top: 32.0),
+                          child: Column (
+                            children: [
+                              Center(
+                                child: GestureDetector (
+                                    onTap: () {
+                                      controller.getImage(ImageSource.gallery);
+                                    },
+                                    child: Obx(
+                                          () => SizedBox(
+                                        width: 120,
+                                        height: 120,
+                                        child: controller.selectedImagePath.value != ''
+                                            ? CircleAvatar(
+                                            backgroundImage: FileImage(
+                                                File(controller.selectedImagePath.value)))
+                                            : Image.asset('asset/profile.png'),
+                                      ),
+                                    )
+                                ),
+                              ),
+
+                              Center (
+                                child: Row (
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+
+                                  children: [
+                                    SizedBox (
+                                      width: MediaQuery.of(context).size.width / 3,
+
+                                      child: ElevatedButton (
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.black12,
+                                        ),
+                                        onPressed: () {
+                                          _auth.signOut();
+
+                                          Get.toNamed('/register');
+                                        },
+
+                                        child: const Text (
+                                          '로그아웃',
+                                          style: TextStyle (
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   );
                 }
               }
             }
-          ),
-
-          if (data == 'null')
-            const Padding(
-              padding: EdgeInsets.only(left: 12.0, top: 36.0),
-              child: Text(
-                '프로필을 조회하기 전 간단한 닉네임 작성해주세요~!',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          Padding (
-            padding: const EdgeInsets.only(top: 32.0),
-            child: Column (
-              children: [
-                Center(
-                  child: GestureDetector (
-                      onTap: () {
-                        controller.getImage(ImageSource.gallery);
-                      },
-                      child: Obx(
-                        () => SizedBox(
-                          width: 120,
-                          height: 120,
-                          child: controller.selectedImagePath.value != ''
-                              ? CircleAvatar(
-                                  backgroundImage: FileImage(
-                                      File(controller.selectedImagePath.value)))
-                              : Image.asset('asset/profile.png'),
-                        ),
-                      )
-                  ),
-                ),
-
-                Center (
-                  child: Row (
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-
-                    children: [
-                      SizedBox (
-                        width: MediaQuery.of(context).size.width / 3,
-
-                        child: ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black12,
-                          ),
-                          onPressed: () {
-                            _auth.signOut();
-
-                            Get.toNamed('/register');
-                          },
-
-                          child: const Text (
-                            '로그아웃',
-                            style: TextStyle (
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
           ),
         ],
       ),

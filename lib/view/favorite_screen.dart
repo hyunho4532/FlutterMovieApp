@@ -38,6 +38,11 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     });
   }
 
+  Future<String> getFavoriteNicknameData() async {
+    await Future.delayed(const Duration(seconds: 3));
+    return 'Call Favorite Nickname';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,15 +51,25 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 12.0, top: 24.0),
-            child: Text(
-              '안녕하세요, 님',
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+
+          Padding (
+            padding: const EdgeInsets.only(left: 12.0, top: 24.0),
+            child: FutureBuilder (
+              future: getFavoriteNicknameData(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else {
+                  return const Text (
+                    '안녕하세요, 님',
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  );
+                }
+              },
             ),
           ),
 

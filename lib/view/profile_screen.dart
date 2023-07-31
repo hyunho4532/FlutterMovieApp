@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,6 +17,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
   String? data = '';
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -24,6 +26,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       TextEditingController();
 
   final ImageController controller = ImageController();
+
+  String profileImageUrl = '';
+
+  String? url;
+
 
   @override
   void initState() {
@@ -176,6 +183,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   );
                 } else {
+
+                  final storageRef= FirebaseStorage.instance.ref('profile/');
+                  final mountainsRef = storageRef.child('${_auth.currentUser!.uid.toString()}.png');
+
                   return Padding (
                     padding: const EdgeInsets.only(left: 12.0, top: 36.0),
                     child: Column (
@@ -210,17 +221,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               Center(
                                 child: GestureDetector (
-                                    onTap: () {
-                                      controller.getImage(ImageSource.gallery);
-                                    },
-                                    child: Obx(
-                                          () => SizedBox(
+                                    onTap: () => _onImageTap(mountainsRef),
+                                    child: Obx (
+                                          () => SizedBox (
                                         width: 120,
                                         height: 120,
                                         child: controller.selectedImagePath.value != ''
-                                            ? CircleAvatar(
-                                            backgroundImage: FileImage(
-                                                File(controller.selectedImagePath.value)))
+                                            ? CircleAvatar (
+                                            backgroundImage: NetworkImage (
+                                              url!
+                                            ))
                                             : Image.asset('asset/profile.png'),
                                       ),
                                     )
@@ -272,5 +282,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _onImageTap(Reference mountainsRef) async {
+    var imageUrl = await mountainsRef.getDownloadURL();
+
+    setState(() {
+      url = imageUrl;
+    });
+
+    controller.getImage(ImageSource.gallery, _auth);
   }
 }

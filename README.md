@@ -69,7 +69,8 @@
 - ## 2023-08-22
    - [X] 게시판 페이지 구현 완료
    - [X] 다크 모드 적용 시 바텀네비바 이슈 해결
-   - [X] 게시판 등록 다이얼로그 안에 Firebase Database nickname 표시 
+   - [X] 게시판 등록 다이얼로그 안에 Firebase Database nickname 표시
+   - [X] 다이얼로그에서 닉네임을 변경할 수 있게 기능 구현 예정 
 
 <br><br>
 

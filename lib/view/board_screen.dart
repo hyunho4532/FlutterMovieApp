@@ -10,6 +10,7 @@ void main() async {
 }
 
 class BoardScreen extends StatefulWidget {
+
   const BoardScreen({Key? key, required ValueNotifier<ThemeMode> themeNotifier}) : super(key: key);
 
   @override
@@ -17,15 +18,19 @@ class BoardScreen extends StatefulWidget {
 }
 
 class _BoardScreenState extends State<BoardScreen> {
-
   List<dynamic> movieList = [];
-
   final FirebaseAuth _nicknameAuth = FirebaseAuth.instance;
   final FirebaseDatabase _nickNameRef = FirebaseDatabase.instance;
   final _movieKey = GlobalKey<FormState>();
   final TextEditingController _movieController = TextEditingController();
 
   late String _nickName = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNickName();
+  }
 
   Future<void> _loadNickName() async {
     final nicknameSnapshot = await _nickNameRef
@@ -37,26 +42,6 @@ class _BoardScreenState extends State<BoardScreen> {
     setState(() {
       _nickName = nicknameSnapshot.snapshot.value.toString(); // Extract the value from DataSnapshot
     });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    _loadNickName();
-
-    ( () async {
-      var json = await fetch('/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json', {
-        'targetDt': '20221017'
-      });
-
-      setState(() {
-        movieList = json['boxOfficeResult']['dailyBoxOfficeList'];
-      });
-    })();
-    
-
   }
 
   @override
@@ -128,43 +113,11 @@ class _BoardScreenState extends State<BoardScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          showDialog(
+                          showDialog (
                             context: context,
                             barrierDismissible: true,
                             builder: (BuildContext context) {
-                              return Dialog(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Form(
-                                      key: _movieKey,
-                                      child: Padding (
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: TextFormField (
-                                          controller: _movieController,
-                                          decoration: const InputDecoration(
-                                            hintText: '영화 이름을 입력해주세요',
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10), // Add spacing between Form and ListView
-                                    Expanded (
-                                      child: Padding (
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: ListView.separated(
-                                          shrinkWrap: true,
-                                          itemBuilder: (context, index) {
-                                            return Text('${index + 1} : ${movieList[index]['movieNm']}');
-                                          },
-                                          separatorBuilder: (context, index) => const Divider(),
-                                          itemCount: movieList.length,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
+                              return MovieListDialog(movieList: movieList);
                             },
                           );
                         },
@@ -189,5 +142,91 @@ class _BoardScreenState extends State<BoardScreen> {
         ),
       ),
     );
+  }
+}
+
+class MovieListDialog extends StatefulWidget {
+
+  final List<dynamic> movieList;
+
+  const MovieListDialog({Key? key, required this.movieList}) : super(key: key);
+
+  @override
+  State<MovieListDialog> createState() => _MovieListDialogState();
+}
+
+class _MovieListDialogState extends State<MovieListDialog> {
+
+  List<dynamic> _loadedMovieList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadedMovieList = widget.movieList;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Column(
+        children: [
+          /*
+          Expanded (
+            child: Form (
+              key: _movieKey,
+              child: Padding (
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField (
+                  controller: _movieController,
+                  decoration: const InputDecoration(
+                    hintText: '영화 이름을 입력해주세요',
+                  ),
+                ),
+              ),
+            ),
+          ),
+          */
+
+          ElevatedButton (
+            onPressed: () {
+              _loadMovieFetch();
+            },
+
+            child: const Text (
+                '영화 로딩'
+            ),
+          ),
+
+          const SizedBox(height: 10), // Add spacing between Form and ListView
+
+          Expanded(
+            child: ListView.separated (
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return Text('${_loadedMovieList[index]['movieNm']}');
+              },
+              separatorBuilder: (context, index) => const Divider(),
+              itemCount: _loadedMovieList.length,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _loadMovieFetch() async {
+    try {
+      var json = await fetch('/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json', {
+        'targetDt': '20221017'
+      });
+
+      print("Fetched JSON: $json"); // Add this line
+
+      setState(() {
+        _loadedMovieList = json['boxOfficeResult']['dailyBoxOfficeList'];
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
   }
 }

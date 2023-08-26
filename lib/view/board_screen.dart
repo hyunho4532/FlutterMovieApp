@@ -11,8 +11,8 @@ void main() async {
 }
 
 class BoardScreen extends StatefulWidget {
-
-  const BoardScreen({Key? key, required ValueNotifier<ThemeMode> themeNotifier}) : super(key: key);
+  const BoardScreen({Key? key, required ValueNotifier<ThemeMode> themeNotifier})
+      : super(key: key);
 
   @override
   State<BoardScreen> createState() => _BoardScreenState();
@@ -22,8 +22,6 @@ class _BoardScreenState extends State<BoardScreen> {
   List<dynamic> movieList = [];
   final FirebaseAuth _nicknameAuth = FirebaseAuth.instance;
   final FirebaseDatabase _nickNameRef = FirebaseDatabase.instance;
-  final _movieKey = GlobalKey<FormState>();
-  final TextEditingController _movieController = TextEditingController();
 
   String? loadedMovieList;
 
@@ -45,7 +43,21 @@ class _BoardScreenState extends State<BoardScreen> {
         .once();
 
     setState(() {
-      _nickName = nicknameSnapshot.snapshot.value.toString(); // Extract the value from DataSnapshot
+      _nickName = nicknameSnapshot.snapshot.value.toString();
+    });
+  }
+
+  void updateSelectedMovieName(String movieName) async {
+    setState(() {
+      selectedMovieName = movieName;
+      print(selectedMovieName);
+    });
+  }
+
+  void updateSelectedMovie(String movieName) async {
+    setState(() {
+      selectedMovieName = movieName;
+      print(selectedMovieName);
     });
   }
 
@@ -53,148 +65,169 @@ class _BoardScreenState extends State<BoardScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold (
-      floatingActionButton: FloatingActionButton (
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Board Screen'),
+      ),
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           showMovieInsertDialog(context, movieListName);
         },
-
-        child: const Icon (
+        child: const Icon(
           Icons.add_comment_sharp,
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Selected Movie: ${selectedMovieName ?? 'None'}',
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
         ),
       ),
     );
   }
 
   void showMovieInsertDialog(context, loadedMovieList) {
-
-    void updateSelectedMovieName(String movieName) {
-      selectedMovieName = movieName;
-      print(selectedMovieName);
+    void updateSelectedMovieName(String movieName) async {
+      setState(() {
+        selectedMovieName = movieName;
+        print(selectedMovieName);
+      });
     }
 
-    showDialog (
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext context) {
-
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Container(
-              width: double.infinity,
-              height: 560,
-              padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "좋아하는 영화를 입력하여!",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return StatefulBuilder (
+          builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder (
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Container(
+                width: double.infinity,
+                height: 560,
+                padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "좋아하는 영화를 입력하여!",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
 
-                  const Text (
-                    "사람들에게 알려주세요~!",
-                    style: TextStyle (
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                    const Text(
+                      "사람들에게 알려주세요~!",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(
-                    height: 18.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        '이름: ',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black,
+                    const SizedBox(
+                      height: 18.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          '이름: ',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 4.0,
-                      ),
-
-                      Text (
-                        _nickName,
-                        style: const TextStyle(
-                          fontSize: 18,
+                        const SizedBox(
+                          width: 4.0,
                         ),
-                      ),
-                    ],
-                  ),
 
-                  const SizedBox(
-                    height: 28.0,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      showDialog (
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) {
-                          return MovieListDialog (
-                            movieList: movieList,
-                            onMovieSelected: updateSelectedMovieName,
-                          );
-                        },
-                      );
-                    },
-                    child: const Text(
-                      '영화 입력하러 가기',
+                        Text(
+                          _nickName,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(
+                      height: 28.0,
+                    ),
+
+                    selectedMovieName != null ? Text (
+                      "좋아하는 영화 이름: ${selectedMovieName.toString()}",
+                      style: const TextStyle (
+                        color: Colors.black,
+                      ),
+                    ) : const Text (
+                      "",
                       style: TextStyle(
                         color: Colors.black,
-                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                  ),
 
-                  Text (
-                    selectedMovieName.toString() ?? "",
-                    style: const TextStyle (
-                      color: Colors.black,
+                    GestureDetector (
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            return MovieListDialog(
+                              movieList: movieList,
+                              onMovieSelected: updateSelectedMovieName,
+                              updateSelectedMovie: updateSelectedMovie,
+                              showInsertDialogCallback: () {
+                                showMovieInsertDialog(context, movieListName);
+                              },
+                            );
+                          },
+                        );
+                      },
+                      child: const Text(
+                        '영화 입력하러 가기',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
-                  )
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        }
+            );
+          },
+        );
+      },
     );
   }
 }
 
 class MovieListDialog extends StatefulWidget {
-
   final List<dynamic> movieList;
-
   final Function(String) onMovieSelected;
+  final Function(String) updateSelectedMovie;
+  final Function showInsertDialogCallback;
 
-  const MovieListDialog({Key? key, required this.movieList, required this.onMovieSelected}) : super(key: key);
+  const MovieListDialog(
+      {Key? key, required this.movieList, required this.onMovieSelected, required this.updateSelectedMovie, required this.showInsertDialogCallback})
+      : super(key: key);
 
   @override
   State<MovieListDialog> createState() => _MovieListDialogState();
 }
 
 class _MovieListDialogState extends State<MovieListDialog> {
-
   List<dynamic> _loadedMovieList = [];
-
   final TextEditingController _dateEditingController = TextEditingController();
-  final GlobalKey _dataGlobalKey = GlobalKey<FormState>();
-
-  final _BoardScreenState _boardScreenState = _BoardScreenState();
-
-  var movieNameManager = MovieNameManager();
 
   @override
   void initState() {
@@ -207,63 +240,58 @@ class _MovieListDialogState extends State<MovieListDialog> {
     return Dialog(
       child: Column(
         children: [
-          Padding (
+          Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Form (
-              child: TextFormField (
+            child: Form(
+              child: TextFormField(
                 controller: _dateEditingController,
-
-                onTap: () {
-
-                },
-
-                decoration: const InputDecoration (
+                onTap: () {},
+                decoration: const InputDecoration(
                     hintText: '날짜를 입력해주세요 ex) 20230826',
-                    hintStyle: TextStyle (
+                    hintStyle: TextStyle(
                       fontSize: 16.0,
                       color: Colors.grey,
-                    )
-                ),
+                    )),
               ),
             ),
           ),
 
-          const SizedBox (
+          const SizedBox(
             height: 12.0,
           ),
 
-          SizedBox (
+          SizedBox(
             width: MediaQuery.of(context).size.width - 120,
-
-            child: ElevatedButton (
+            child: ElevatedButton(
               onPressed: () {
                 _loadMovieFetch();
               },
-
-              child: const Column (
+              child: const Column(
                 children: [
-                  Text (
-                      '영화 조회'
-                  ),
+                  Text('영화 조회'),
                 ],
               ),
             ),
           ),
 
-          const SizedBox(height: 10), // Add spacing between Form and ListView
+          const SizedBox(
+              height: 10
+          ), // Add spacing between Form and ListView
 
-          Expanded (
-            child: Padding (
+          Expanded(
+            child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ListView.separated (
+              child: ListView.separated(
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  return GestureDetector (
+                  return GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pop(_loadedMovieList[index]['movieNm']);
                       widget.onMovieSelected(_loadedMovieList[index]['movieNm']);
+                      widget.updateSelectedMovie(_loadedMovieList[index]['movieNm']);
+                      Navigator.pop(context, _loadedMovieList[index]['movieNm']);
+                      widget.showInsertDialogCallback();
                     },
-                    child: Text('${_loadedMovieList[index]['movieNm']}')
+                    child: Text('${_loadedMovieList[index]['movieNm']}'),
                   );
                 },
                 separatorBuilder: (context, index) => const Divider(),
@@ -278,9 +306,11 @@ class _MovieListDialogState extends State<MovieListDialog> {
 
   Future<void> _loadMovieFetch() async {
     try {
-      var json = await fetch('/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json', {
-        'targetDt': _dateEditingController.text
-      });
+      var json = await fetch(
+          '/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json',
+          {
+            'targetDt': _dateEditingController.text,
+          });
 
       print("Fetched JSON: $json"); // Add this line
 

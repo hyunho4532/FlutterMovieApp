@@ -276,9 +276,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
         _auth.currentUser?.sendEmailVerification();
 
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const ProfileScreen()),
-        );
+        Get.to(const ProfileScreen());
       }
     } catch (e) {
       print("Error creating user: $e");

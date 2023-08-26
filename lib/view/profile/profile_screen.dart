@@ -134,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 } else if (index == 1) {
                   return FavoriteScreen(themeNotifier: themeNotifier);
                 } else if (index == 2) {
-                  return BoardScreen(themeNotifier: themeNotifier);
+                  return BoardScreen(themeNotifier: themeNotifier,);
                 } else {
                   return ProfileContentScreen(themeNotifier: themeNotifier);
                 }

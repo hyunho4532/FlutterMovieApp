@@ -263,21 +263,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void firebaseRegister() async {
-    UserCredential userCredential = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text
-        ).then((value) {
-        Navigator.of(context).push (
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text
+      );
+
+      if (userCredential.user != null) {
+        _nicknameDatabase.ref(_auth.currentUser!.uid.toString()).child(
+            "nickname").set(_nicknameController.text);
+
+        _auth.currentUser?.sendEmailVerification();
+
+        Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const ProfileScreen()),
         );
+      }
+    } catch (e) {
+      print("Error creating user: $e");
 
-      return value;
-    });
-
-    _nicknameDatabase.ref(_auth.currentUser!.uid.toString()).child("nickname").set(_nicknameController.text);
-
-    _auth.currentUser?.sendEmailVerification();
+      Get.snackbar('알림', '이미 존재하는 계정입니다.',
+          snackPosition: SnackPosition.BOTTOM,
+          forwardAnimationCurve: Curves.elasticInOut,
+          reverseAnimationCurve: Curves.easeOut,
+          colorText: Colors.black
+      );
+    }
   }
 
   Future<UserCredential> loginWithGoogle(BuildContext context) async {
